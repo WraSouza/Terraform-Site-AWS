@@ -1,6 +1,6 @@
 resource "aws_key_pair" "aws_key" {
   key_name   = "aws-key"
-  public_key = file("./aws-key.pub")
+  public_key = file("C:/Users/wladimir.souza/Documents/Chaves AWS")
 }
 
 resource "tls_private_key" "rsa" {
@@ -15,7 +15,7 @@ resource "local_file" "TF-Key" {
 
 resource "aws_instance" "vm" {
   ami                         = "ami-053b0d53c279acc90" //necessário pegar a AMI correta da região. Isso se pega na plataforma da AWS indo em EC2
-  instance_type               = "t2.micro"
+  instance_type               = "t2.micro"  
   subnet_id                   = aws_subnet.subnet.id
   key_name                    = aws_key_pair.aws_key.key_name
   vpc_security_group_ids      = [aws_security_group.security_group.id]
@@ -35,7 +35,6 @@ resource "aws_instance" "vm" {
     inline = [       
 "sudo apt-get update",
 "cd /tmp/",
-"mkdir site",
 "sudo chmod +x script.sh",
 "sudo sh script.sh",
 "sudo docker build -t minhaimagem .",
@@ -46,7 +45,7 @@ resource "aws_instance" "vm" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("./aws-key")
+    private_key = file("C:/Users/wladimir.souza/Documents/Chaves AWS")
     host        = self.public_ip
   }
 

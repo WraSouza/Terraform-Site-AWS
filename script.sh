@@ -15,8 +15,6 @@ sudo apt -y remove docker docker-engine docker.io containerd runc
     sudo docker-compose -f /tmp/docker/api-cep/docker-compose.yml up -d
     sudo docker-compose -f /tmp/docker/zabbix/docker-compose.yml up -d
 
-mkdir /usr/share/nginx
-mkdir /usr/share/nginx/html
 
 echo "FROM nginx
 COPY /site /usr/share/nginx/html/wavecafe
