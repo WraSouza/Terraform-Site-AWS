@@ -1,6 +1,7 @@
-resource "aws_key_pair" "aws_key" {
+resource "aws_key_pair" "key_value" {
   key_name   = "aws-key"
-  public_key = file("C:/Users/wladimir.souza/Documents/Chaves AWS")
+  public_key = file("./my_key.pub")
+
 }
 
 resource "tls_private_key" "rsa" {
@@ -15,11 +16,11 @@ resource "local_file" "TF-Key" {
 
 resource "aws_instance" "vm" {
   ami                         = "ami-053b0d53c279acc90" //necessário pegar a AMI correta da região. Isso se pega na plataforma da AWS indo em EC2
-  instance_type               = "t2.micro"  
+  instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.subnet.id
-  key_name                    = aws_key_pair.aws_key.key_name
+  key_name                    = aws_key_pair.key_value.key_name
   vpc_security_group_ids      = [aws_security_group.security_group.id]
-  associate_public_ip_address = true  
+  associate_public_ip_address = true
 
   provisioner "file" {
     source      = "./2121_wave_cafe"
@@ -27,25 +28,25 @@ resource "aws_instance" "vm" {
   }
 
   provisioner "file" {
-    source = "./script.sh"
+    source      = "./script.sh"
     destination = "/tmp/script.sh"
   }
 
   provisioner "remote-exec" {
-    inline = [       
-"sudo apt-get update",
-"cd /tmp/",
-"sudo chmod +x script.sh",
-"sudo sh script.sh",
-"sudo docker build -t minhaimagem .",
-"sudo docker container run --name containerdocker -p 80:80 -d minhaimagem"
+    inline = [
+      "sudo apt-get update",
+      "cd /tmp/",
+      "sudo chmod +x script.sh",
+      "sudo sh script.sh",
+      "sudo docker build -t minhaimagem .",
+      "sudo docker container run --name containerdocker -p 80:80 -d minhaimagem"
     ]
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("C:/Users/wladimir.souza/Documents/Chaves AWS")
+    private_key = file("./my_key")
     host        = self.public_ip
   }
 
